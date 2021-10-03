@@ -1,109 +1,111 @@
 #include <stdio.h>
+#include <conio.h>
 #include <stdlib.h>
-//Global Variable
-int size,choice,ele;
-
-
-//Creating Stack
-struct stack{
-    int arr[100];
-    int top;
-
-}st;
-
-//Inserting Element
-void push(int element)
+struct stack
 {
-    if((st.top)==size)
-    {
-        printf("\n Stack is Full");
-    }
+    int index;
+    int size;
+    int *p;
+};
+void createStack(struct stack *var, int size)
+{
+    var->p = malloc(sizeof(int) * size);
+    var->index = -1;
+    var->size = size;
+}
+int isFull(struct stack var)
+{
+    if (var.index == var.size - 1)
+        return 1;
     else
-    {
-        st.top--;
-        printf("\nEnter a Value ");
-        scanf("%s",&ele);
-        st.arr[st.top]=ele;
-    }
+        return 0;
 }
-
-//Removing Element
-int pop()
+int isEmpty(struct stack var)
 {
-    if((st.top)==-1)
-    {
-        printf("\nStack is Empty");
-    }
+    if (var.index == -1)
+        return 1;
     else
-    {
-        int out;
-        out=st.arr[st.top];
-        st.top++;
-        return out;
-    }
+        return 0;
 }
-
-//Peek
-int peek()
+void push(struct stack *var, int value)
 {
-    int display;
-    display=st.arr[st.rear];
-    return display;
+    var->index++;
+    var->p[var->index] = value;
+    printf("\nElement Pushed to Stack\n");
 }
-
-//Display Stack
-void display()
+int pop(struct stack *var)
 {
-    if((st.top)>=0)
+    var->index--;
+    printf("\nElement Popped from Stack\n");
+    return var->p[var->index + 1];
+}
+void displaystack(struct stack var)
+{
+    if (!isEmpty(var))
     {
-        printf("\n\nElements in the Stack");
-        for(i=st.top;i>=0;i++)
+        printf("There are %d Elements in Stack of Size %d\n\n", var.index + 1, var.size);
+        printf("The Elements in the Stack are:\n");
+        for (int i = 0; i <= var.index; i++)
         {
-            printf("\n%d",st.arr[i]);
+            printf("%d ", var.p[i]);
         }
     }
     else
     {
-        printf("No elements to Display");
+        printf("Stack is Empty\n");
     }
 }
-
-int main()
+void main()
 {
-    st.top=-1;
-    printf("Enter a Stack size less than 100 : ");
-    scanf("%d",&size);
-    printf("\nStack Operations.....");
-    printf("\n\t 1.PUSH\n\t 2.POP\n\t 3.PEEK\n\t 4.DISPLAY\n\t 5.EXIT");
-
-    do{
-        printf("\nEnter Your Choice  ");
-        scanf("%c",&choice);
-        switch(choice)
+    struct stack stavar;
+    int size;
+    printf("Enter the size of Stack\n");
+    scanf("%d", &size);
+    createStack(&stavar, size);
+    while (1)
+    {
+        printf("Press 1 to Push Element in Stack\n");
+        printf("Press 2 to Pop Element from Stack\n");
+        printf("Press 3 to Display the Elemets if Stack\n");
+        printf("Press 0 to delete Stack and Exit\n");
+        int choice;
+        scanf("%d", &choice);
+        if (choice == 1)
         {
-        case 1:
+            if (!isFull(stavar))
             {
-                push(ele);break;
+                int value;
+                printf("Enter the Element which you want to Enter in Stack\n");
+                scanf("%d", &value);
+                push(&stavar, value);
             }
-        case 2:
+            else
             {
-                printf("%d",pop());
+                printf("Stack is Full\n");
             }
-        case 3:
-            {
-                printf("%d",peek());
-            }
-        case 4:
-            {
-                display();break;
-            }
-        case 5:
-            {
-                printf("\n\t EXIT Point");break;
-            }
-        default:
-            printf("\nEnter a correct choice (1,2,3,4,5)");
         }
-    }while(choice=5);
-    return 0;
+        else if (choice == 2)
+        {
+            if (!isEmpty(stavar))
+            {
+                printf("The Element Popped from the Stack is %d\n", pop(&stavar));
+            }
+            else
+            {
+                printf("Stack is Empty\n");
+            }
+        }
+        else if (choice == 3)
+        {
+            displaystack(stavar);
+        }
+        else if (choice == 0)
+        {
+            free(stavar.p);
+            printf("Stack Deleted\n");
+            exit(0);
+        }
+        printf("\n\n");
+    }
+    getch();
 }
